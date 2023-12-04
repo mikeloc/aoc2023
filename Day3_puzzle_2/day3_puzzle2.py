@@ -29,7 +29,7 @@ total = 0
 symbols = '!@#$%^&*()_+-=/'
 digits = '0123456789'
 
-file = open('Day3_puzzle_1/input1.txt', 'r')
+file = open('Day3_puzzle_2/input2.txt', 'r')
 Lines = file.readlines()
 
 symbolsFound = []
@@ -77,6 +77,6 @@ for symbol in symbolsFound:
             if adjacent(number,symbol):
                 listOfNumbers.append(number)
         if len(listOfNumbers) == 2:
-            total = listOfNumbers[0].data * listOfNumbers[1].data
+            total = total + listOfNumbers[0].data * listOfNumbers[1].data
 
 print("total: ", total )
