@@ -1,9 +1,10 @@
-# Python code to
-# demonstrate readlines()
+#
+# Day 2 puzzle 2
+#
 total = 0
 
  # Using readlines()
-file1 = open('Day2_puzzle_2/input2.txt', 'r')
+file1 = open('Day2/input2.txt', 'r')
 Lines = file1.readlines()
 
 # Strips the newline character

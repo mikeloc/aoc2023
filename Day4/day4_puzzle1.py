@@ -2,7 +2,7 @@
 # Day 4 Puzzle 1
 #
 
-file = open('Day4_puzzle_1/input2.txt', 'r')
+file = open('Day4/input2.txt', 'r')
 Lines = file.readlines()
 
 total = 0

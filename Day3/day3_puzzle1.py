@@ -29,7 +29,7 @@ total = 0
 symbols = '!@#$%^&*()_+-=/'
 digits = '0123456789'
 
-file = open('Day3_puzzle_1/input2.txt', 'r')
+file = open('Day3/input2.txt', 'r')
 Lines = file.readlines()
 
 symbolsFound = []

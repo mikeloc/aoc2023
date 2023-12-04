@@ -1,7 +1,7 @@
 #
-# Day 4 Puzzle 1
+# Day 4 Puzzle 2
 #
-file = open('Day4_puzzle_2/input2.txt', 'r')
+file = open('Day4/input2.txt', 'r')
 Lines = file.readlines()
 cardData = [0]
 

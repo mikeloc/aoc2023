@@ -1,8 +1,8 @@
 #
-# Day 2 puzzle 2
+# Day 1 puzzle 2
 # 
  
-file = open('Day1_puzzle_2/input2.txt', 'r')
+file = open('Day1/input2.txt', 'r')
 Lines = file.readlines()
 digits = "0123456789"
  
