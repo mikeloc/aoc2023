@@ -5,14 +5,13 @@ file = open('Day4_puzzle_2/input2.txt', 'r')
 Lines = file.readlines()
 cardData = [0]
 
-
+# Polutate cardId for all card starting with 1 card for each
 for line in Lines:
     line = line.rstrip('\n')
     splitCardIdAndNumbers = line.split(":")
     cardId = int(splitCardIdAndNumbers[0].split()[1])
     cardData.insert(cardId, 1)
 
-total = 0
 for line in Lines:
     line = line.rstrip('\n')
     splitCardIdAndNumbers = line.split(":")
@@ -30,6 +29,7 @@ for line in Lines:
     for i in range(cardId+1,cardId+cardPoint+1): 
         cardData[i] = cardData[i] + cardData[cardId]
 
+total = 0
 for cardPoints in cardData:
     total = total+cardPoints
  
