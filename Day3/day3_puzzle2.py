@@ -64,12 +64,11 @@ for line in Lines:
                 numberInProgress = False
                 currentNumber = 0
                 currentNumDigits = 0
-                  
         XPos = XPos+1
     # Find all symbols and record postion
     YPos = YPos + 1
 
-# Sum numbers which have at least one adjcacent symbols
+# Look for * with exactly 2 adjcacent numbers
 for symbol in symbolsFound:
     if (symbol.data == '*'):
         listOfNumbers = []

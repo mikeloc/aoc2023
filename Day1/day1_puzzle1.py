@@ -1,11 +1,10 @@
-# Python code to
-# demonstrate readlines()
- 
- # Using readlines()
-file1 = open('day1_puzzle_1/input2.txt', 'r')
-Lines = file1.readlines()
- 
+# 
+# Day 1 puzzle 1
+# 
 
+file = open('day1_puzzle_1/input2.txt', 'r')
+Lines = file.readlines()
+digits = "0123456789"
 
 count = 0
 # Strips the newline character
@@ -14,7 +13,7 @@ for line in Lines:
     firstNum = 0
     lastNum = 0
     for char in line:
-        if (char >= '0') and (char <= '9'):
+        if char in digits:
             if not firstFound: 
                firstNum = char
                firstFound = True

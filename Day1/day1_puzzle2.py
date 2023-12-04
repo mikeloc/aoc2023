@@ -1,14 +1,12 @@
-# Python code to
-# demonstrate readlines()
+#
+# Day 2 puzzle 2
+# 
  
- # Using readlines()
-file1 = open('Day1_puzzle_2/input2.txt', 'r')
-Lines = file1.readlines()
+file = open('Day1_puzzle_2/input2.txt', 'r')
+Lines = file.readlines()
+digits = "0123456789"
  
-numInLetters = ['zero','one','two','three', 'four', 'five', 'six', 'seven', 'eight', 'nine']
-
-def strToDigit(a_str):
-    numInLet = {
+numInLetters = {
         "zero":'0',
         "one":'1',
         "two":'2',
@@ -18,12 +16,9 @@ def strToDigit(a_str):
         "six":'6',
         "seven":'7',
         "eight":'8',
-        "nine":'9'
-    }
-    return numInLet[a_str]
+        "nine":'9' }
 
 count = 0
-# Strips the newline character
 for line in Lines:
     firstFound = False
     firstNum = 0
@@ -33,7 +28,7 @@ for line in Lines:
     curPos = 0
 
     for char in line:
-        if (char >= '0') and (char <= '9'):
+        if char in digits:
             if not firstFound: 
                firstNum = char
                firstFound = True
@@ -43,14 +38,14 @@ for line in Lines:
         for num in numInLetters:
             if (line.find(num,curPos,curPos+len(num)) == curPos ):
                 if not firstFound: 
-                    firstNum = strToDigit(num)
+                    firstNum = numInLetters[num]
                     firstFound = True
                     firstPos = curPos
-                lastNum = strToDigit(num)
+                lastNum = numInLetters[num]
                 lastPos = curPos
         curPos = curPos + 1
 
-    print("Line{}: {}".format(count, line.strip()))
+    print("Line", count, line.strip())
     total = int(firstNum+lastNum)
     print("first:", firstNum, " firstPos:", firstPos , " last: ", lastNum,  " lastPos:", lastPos,  " total:", total) 
     count += total
