@@ -1,5 +1,5 @@
 #
-# Day 3 Puzzle 1
+# Day 3 Puzzle 2
 #
 
 class Positions:
