@@ -2,6 +2,7 @@
 # Day 8 Puzzle 2
 #
 from enum import Enum
+import math
 
 directions=[]
 nodes={}
@@ -44,30 +45,32 @@ for i in range(1,len(Lines)):
 dir_index = 0 
 totalStep = 0
 found = False
-
+cycles = []
 nodeList = []
 for key,node in nodes.items():
     if 'A' in key:
         nodeList.append(key)
 
-while not found:
-    for nodeIndex in range(0,len(nodeList)):
+for node in nodeList:
+    current = nodes[node]
+    found = False
+    stepCount = 0
+    while not found:
         if (directions[dir_index] == Direction.LEFT):
-            next = nodes[nodeList[nodeIndex]].left
+            next = current.left
         else:
-            next = nodes[nodeList[nodeIndex]].right
-        nodeList[nodeIndex] = next
-       
-    totalStep += 1
+            next = current.right 
+        stepCount += 1
+        dir_index += 1
+        if dir_index == len(directions):
+            dir_index = 0
+        if 'Z' in next:
+            found = True
+            cycles.append(stepCount)
+        else:
+            current = nodes[next]
+for cycle in cycles:
+    print(cycle)
 
-    dir_index += 1
-    if dir_index == len(directions):
-        dir_index = 0
-
-    allEnd = True
-    for nodeIndex in range(0,len(nodeList)):
-        if 'Z' not in nodeList[nodeIndex]:
-            allEnd = False
-    if allEnd:
-        found = True
+totalStep = math.lcm(*cycles)
 print("totalStep",totalStep)
