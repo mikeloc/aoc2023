@@ -51,7 +51,6 @@ class Direction(Enum):
     START = 4
 
 map = []
-start = Pos(0,0)
 
 def loadFile():
     file = open('Day10/input2.txt', 'r')
@@ -174,6 +173,7 @@ def findLoop(start):
         current,direction = findNextStep(current,direction)
     end_direction = direction
     S_pipe = getStartPointPipe(start_direction,end_direction)
+    print("Number of pipes in loop", len(listPos))
     for pos in listPos:
         map[pos.posY][pos.posX].inLoop = True
     return S_pipe
@@ -213,9 +213,7 @@ def findPipesInsideLoop(S_pipe):
     map[start.posY][start.posX].char = 'S'
     return count
             
-def printMap(pretty):
-    if pretty:
-        nice = True
+def printMap():
     for i in range(len(map)):
         sys.stdout.write("%03d " % (i,))
         for j in range(len(map[i])):
@@ -237,5 +235,6 @@ def printMap(pretty):
 start = loadFile()
 S_pipe = findLoop(start)
 count = findPipesInsideLoop(S_pipe)
-printMap(True)
+nice = False
+printMap()
 print("Count inside:", count, "\n\n")
