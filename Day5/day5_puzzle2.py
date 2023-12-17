@@ -6,11 +6,19 @@ file = open('Day5/input2.txt', 'r')
 Lines = file.readlines()
 file_len = len(Lines)
 
+
 class Range:
+    def __init__(self, start, end):
+        self.start = start
+        self.end = end
+
+class MapRow:
   def __init__(self, dstStart, srcStart, num):
     self.dstStart = dstStart
     self.srcStart = srcStart
     self.num = num
+  def get_dest(self, source):
+      return self.dstStart + source - self.srcStart
 
 def readMap(mapName,map,lineCounter):
     found = False
@@ -27,16 +35,70 @@ def readMap(mapName,map,lineCounter):
             dest = int(row[0])
             src = int(row[1])
             range = int(row[2])
-            entry = Range(dest,src,range)
-            map.append(entry)
+            entry = MapRow(dest,src,range)
+            
+            mapAdded = False
+            i=0
+            while i<len(map) and not mapAdded:
+                if ( map[i].srcStart > src):
+                    map.insert(i, entry)
+                    mapAdded = True
+                else:
+                    i += 1
+            if not mapAdded:
+                map.append(entry)
+
         lineCounter = lineCounter + 1
+
+    # Fill unmapped regions
+    i=0
+    src = 0
+    while i<len(map):
+        if src < map[i].srcStart:
+            entry = MapRow(src, src, map[i].srcStart - src)
+            map.insert(i,entry)
+        src = map[i].srcStart + map[i].num
+        i += 1
+
+    src = map[i-1].srcStart+map[i-1].num        
+    entry = MapRow(src,src,99999999999999999999)
+    map.append(entry)
+
     return lineCounter
 
-def searchMap(src, map):
-    for mapEntry in map:
-        if src >= mapEntry.srcStart and src < mapEntry.srcStart + mapEntry.num:
-            return mapEntry.dstStart + src - (mapEntry.srcStart)
-    return src
+
+def searchMap(srcList, map):
+    destList = []
+    for src in srcList:
+        i=0
+        while src.start > map[i].srcStart + map[i].num - 1:
+            i += 1
+
+        destStart = map[i].get_dest(src.start)
+        # Found lower end of the range in i, check upper end
+        if src.end <= map[i].srcStart + map[i].num - 1:
+            destEnd = map[i].get_dest(src.end)
+            destList.append(Range(destStart,destEnd))
+            i += 1
+        else:
+            destEnd =  map[i].dstStart + map[i].num -1
+            destList.append(Range(destStart,destEnd))
+            i += 1
+
+        while i < len(map) and src.end > map[i].srcStart + map[i].num - 1:
+            # map whole range and increase i
+            destStart = map[i].dstStart
+            destEnd = map[i].dstStart + map[i].num
+            destList.append(Range(destStart,destEnd))
+            i += 1
+
+        # map beginning of range to dest
+        if i < len(map) and src.end > map[i].srcStart:
+            destStart = map[i].dstStart
+            destEnd = map[i].get_dest(src.end) 
+            destList.append(Range(destStart,destEnd))
+            
+    return destList
 
 seed_to_soil_map = []
 soil_to_fertilizer_map = []
@@ -45,7 +107,7 @@ water_to_light_map = []
 light_to_temperature_map = []
 temperature_to_humidity_map = []
 humidity_to_location_map = []
-LowestLocation = 99999999999999999999
+lowestLocation = 99999999999999999999
 
 lineCounter = 0
 # Read seeds
@@ -68,24 +130,23 @@ len_seeds = len(seeds)
 seed_index = 0
 while seed_index < len_seeds:
     seedStart = seeds[seed_index]
-    seedEnd = seedStart+seeds[seed_index+1]-1
+    seedEnd = seedStart+seeds[seed_index+1]-1      
     seed_index = seed_index + 2
+
+    seed = []
+    seed.append(Range(seedStart, seedEnd))
+
     print("seed range", seedStart, "...", seedEnd)
-    count = 0
-    for seed in range(seedStart,seedEnd):
-        soil = searchMap(seed, seed_to_soil_map)
-        fertilizer = searchMap(soil, soil_to_fertilizer_map)
-        water = searchMap(fertilizer, fertilizer_to_water_map)
-        light = searchMap(water, water_to_light_map)
-        temperature = searchMap(light, light_to_temperature_map)
-        humidity = searchMap(temperature, temperature_to_humidity_map)
-        location = searchMap(humidity, humidity_to_location_map)
-        count = count+1
-        if (count % 1000000 == 0):
-            print(seed)
-#            print("Seed:", seed, "soil", soil, "fertilizer", fertilizer, "water", water, "light",light, "temperature",temperature, "humidity", humidity, "location", location )
+    soil = searchMap(seed, seed_to_soil_map)
+    fertilizer = searchMap(soil, soil_to_fertilizer_map)
+    water = searchMap(fertilizer, fertilizer_to_water_map)
+    light = searchMap(water, water_to_light_map)
+    temperature = searchMap(light, light_to_temperature_map)
+    humidity = searchMap(temperature, temperature_to_humidity_map)
+    location = searchMap(humidity, humidity_to_location_map)
+ 
+    for loc in location: 
+        if (loc.start < lowestLocation):
+            lowestLocation = loc.start
 
-        if (location < LowestLocation):
-            LowestLocation = location
-
-print("Lowest Location: ",  LowestLocation )
+print("Lowest Location: ",  lowestLocation )
