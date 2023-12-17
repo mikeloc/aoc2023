@@ -43,7 +43,6 @@ class Pos:
         return Pos(self.posX, self.posY+1)
     def left(self):
         return Pos(self.posX-1, self.posY)
-
 class Direction(Enum):
     UP = 0
     RIGHT = 1
@@ -53,7 +52,6 @@ class Direction(Enum):
 
 map = []
 start = Pos(0,0)
-total = 0
 
 def loadFile():
     file = open('Day10/input2.txt', 'r')
@@ -136,8 +134,6 @@ def findNextStep(curStep, direction):
         if (map[leftPos.posY][leftPos.posX].char in 'FL-'):
             return leftPos, Direction.LEFT
 
-
-
 def getStartPointPipe(first, last):
     if first == Direction.UP:
         if last == Direction.LEFT:
@@ -168,84 +164,78 @@ def getStartPointPipe(first, last):
         elif last == Direction.LEFT:
             return '-'
 
-listPos = []
-start = loadFile()
-listPos.append(start)
-current,direction = findNextStep(start, Direction.START)
-start_direction = direction
+def findLoop(start):
+    listPos = []
+    listPos.append(start)
+    current,direction = findNextStep(start, Direction.START)
+    start_direction = direction
+    while current != start:
+        listPos.append(current)
+        current,direction = findNextStep(current,direction)
+    end_direction = direction
+    S_pipe = getStartPointPipe(start_direction,end_direction)
+    for pos in listPos:
+        map[pos.posY][pos.posX].inLoop = True
+    return S_pipe
 
-while current != start:
-    listPos.append(current)
-    current,direction = findNextStep(current,direction)
-
-end_direction = direction
-S_pipe = getStartPointPipe(start_direction,end_direction)
-
-for pos in listPos:
-    map[pos.posY][pos.posX].inLoop = True
-
-
-map[start.posY][start.posX].char = S_pipe
-for i in range(0,len(map)):
-    inside = False
-    lastCorner = ""
-    for j in range(len(map[i])):
-        if not map[i][j].inLoop:
-            map[i][j].insideLoop = inside
-        else:
-            if map[i][j].char == 'F':
-                inside = not inside
-                lastCorner = 'F'
-        
-            if map[i][j].char == '7':
-                if (lastCorner == 'F'):
-                    inside = not inside
-                lastCorner = '7'
-
-            if map[i][j].char == 'J':
-                if (lastCorner == 'L'):
-                    inside = not inside
-                lastCorner = 'J'
-
-            if map[i][j].char == 'L':
-                inside = not inside
-                lastCorner = 'L'
-
-            if map[i][j].char == "|":
-                inside = not inside
-
-map[start.posY][start.posX].char = 'S'
-count = 0
-for i in range(len(map)):
-    sys.stdout.write("%03d " % (i,))
-    for j in range(len(map[i])):
-        if start.posX == j and start.posY == i:
-            sys.stdout.write("\033[31m"+"S")
-        else:
-            if map[i][j].inLoop:
-                sys.stdout.write("\033[33m"+str(map[i][j]))
-            else:
-                if map[i][j].insideLoop:
+def findPipesInsideLoop(S_pipe):
+    map[start.posY][start.posX].char = S_pipe
+    count = 0
+    for i in range(0,len(map)):
+        inside = False
+        lastCorner = ""
+        for j in range(len(map[i])):
+            if not map[i][j].inLoop:
+                if inside:
                     count += 1
-                    sys.stdout.write("\033[31m"+str(map[i][j]))
-                else:
-                    sys.stdout.write("\033[94m"+str(map[i][j]))
-    print(" ")
-
-print("Count inside:", count, "\n\n")
-
-nice = False
-for i in range(len(map)):
-    sys.stdout.write("%03d " % (i,))
-    for j in range(len(map[i])):
-        if start.posX == j and start.posY == i:
-            sys.stdout.write("\033[31m"+"S")
-        else:
-            if map[i][j].inLoop:
-                sys.stdout.write("\033[33m"+str(map[i][j]))
+                map[i][j].insideLoop = inside
             else:
-                if map[i][j].insideLoop:
-                    sys.stdout.write("\033[31m"+str(map[i][j]))
+                if map[i][j].char == 'F':
+                    inside = not inside
+                    lastCorner = 'F'
+            
+                if map[i][j].char == '7':
+                    if (lastCorner == 'F'):
+                        inside = not inside
+                    lastCorner = '7'
+
+                if map[i][j].char == 'J':
+                    if (lastCorner == 'L'):
+                        inside = not inside
+                    lastCorner = 'J'
+
+                if map[i][j].char == 'L':
+                    inside = not inside
+                    lastCorner = 'L'
+
+                if map[i][j].char == "|":
+                    inside = not inside
+    map[start.posY][start.posX].char = 'S'
+    return count
+            
+def printMap(pretty):
+    if pretty:
+        nice = True
+    for i in range(len(map)):
+        sys.stdout.write("%03d " % (i,))
+        for j in range(len(map[i])):
+            if start.posX == j and start.posY == i:
+                sys.stdout.write("\033[31m"+"S")
+            else:
+                if map[i][j].inLoop:
+                    sys.stdout.write("\033[33m"+str(map[i][j]))
                 else:
-                    sys.stdout.write("\033[94m"+str(map[i][j]))
-    print(" ")
+                    if map[i][j].insideLoop:
+                        sys.stdout.write("\033[31m"+str(map[i][j]))
+                    else:
+                        sys.stdout.write("\033[94m"+str(map[i][j]))
+        print(" ")
+
+#
+# Main
+#
+start = loadFile()
+S_pipe = findLoop(start)
+count = findPipesInsideLoop(S_pipe)
+printMap(True)
+print("Count inside:", count, "\n\n")

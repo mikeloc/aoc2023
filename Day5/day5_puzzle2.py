@@ -1,6 +1,7 @@
 #
 # Day 5 Puzzle 2
 #
+import sys
 
 file = open('Day5/input2.txt', 'r')
 Lines = file.readlines()
@@ -100,6 +101,13 @@ def searchMap(srcList, map):
             
     return destList
 
+def dumpRanges(rangeList, name):
+    sys.stdout.write(name)
+    for range in rangeList:
+        sys.stdout.write(str(range.start) + " ... " + str(range.end) + "    " )
+    sys.stdout.write("\n")
+
+
 seed_to_soil_map = []
 soil_to_fertilizer_map = []
 fertilizer_to_water_map = []
@@ -138,15 +146,25 @@ while seed_index < len_seeds:
 
     print("seed range", seedStart, "...", seedEnd)
     soil = searchMap(seed, seed_to_soil_map)
+    dumpRanges(soil, "soil:")
     fertilizer = searchMap(soil, soil_to_fertilizer_map)
+    dumpRanges(fertilizer,"fertilizer:")
     water = searchMap(fertilizer, fertilizer_to_water_map)
+    dumpRanges(water,"water:")
     light = searchMap(water, water_to_light_map)
+    dumpRanges(light,"light:")
     temperature = searchMap(light, light_to_temperature_map)
+    dumpRanges(temperature,"temperature:")
     humidity = searchMap(temperature, temperature_to_humidity_map)
+    dumpRanges(humidity,"humidity:")
     location = searchMap(humidity, humidity_to_location_map)
- 
+    dumpRanges(location,"location:")
+
     for loc in location: 
         if (loc.start < lowestLocation):
             lowestLocation = loc.start
+            print("New lowest location:", lowestLocation)
+
+    print("\n\n")
 
 print("Lowest Location: ",  lowestLocation )
