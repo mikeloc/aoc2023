@@ -1,8 +1,7 @@
 #
-# Day 9 Puzzle 1
+# Day 11 Puzzle 1
 #
 from enum import Enum
-import sys
 
 galaxyID = 1
 
@@ -13,7 +12,6 @@ class Pos:
     def __eq__(self, other):
         return self.posX == other.posX and self.posY == other.posY
     
-
 class Galaxy:
     def __init__(self, pos):
         global galaxyID
@@ -75,7 +73,6 @@ def expandUniverse(sizeOfUniverse):
 
     print("Expand")
 
-    
 def sumOfAllPaths():
     total = 0
     startGalaxyIdx = 0
@@ -83,9 +80,7 @@ def sumOfAllPaths():
         for destGalaxyIdx in range(startGalaxyIdx+1, len(map)):
             dist = abs(map[startGalaxyIdx].pos.posX - map[destGalaxyIdx].pos.posX) + abs(map[startGalaxyIdx].pos.posY - map[destGalaxyIdx].pos.posY)
             total += dist
- #           print("Distance between", map[startGalaxyIdx].galaxyId, "and", map[destGalaxyIdx].galaxyId, "is:", dist )
         startGalaxyIdx += 1
-#        print()
     return total
 
 #
